@@ -10,11 +10,19 @@
 
 #include <JuceHeader.h>
 
+enum Shape
+{
+    Shape_12,
+    Shape_24,
+    Shape_36,
+    Shape_48
+};
+
 struct ChainSettings
 {
     float peakFreq{ 0 }, peakGainInDecibels{ 0 }, peakQ{ 1.f };
     float lowCutFreq{ 0 }, highCutFreq{ 0 };
-    int lowCutShape{ 0 }, highCutShape{ 0 };
+    Shape lowCutShape{ Shape::Shape_12 }, highCutShape{ Shape::Shape_12 };
 
 };
 
@@ -80,6 +88,48 @@ private:
         Peak,
         HightCut
     };
+
+    void updatePeakFilter(const ChainSettings& chainSettings);
+    
+    using Coefficients = Filter::CoefficientsPtr;
+    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+
+    template<int Index, typename ChainType, typename CoefficientType>
+    void update(ChainType& chain, const CoefficientType& coefficients)
+    {
+        updateCoefficients(chain.template get<Index>().coefficients, coefficients[Index]);
+        chain.template setBypassed<Index>(false);
+    }
+
+    template<typename ChainType, typename CoefficientType>
+    void updateCutFilter(ChainType& chain, const CoefficientType& coefficients, const Shape& lowCutShape) 
+    {
+        chain.template setBypassed<0>(true);
+        chain.template setBypassed<1>(true);
+        chain.template setBypassed<2>(true);
+        chain.template setBypassed<3>(true);
+
+        switch (lowCutShape) {
+
+        case Shape_48:
+        {
+            update<3>(chain, coefficients);
+        }
+        case Shape_36:
+        {
+            update<2>(chain, coefficients);
+        }
+        case Shape_24:
+        {
+            update<1>(chain, coefficients);
+        }
+        case Shape_12:
+        {
+            update<0>(chain, coefficients);
+        }
+
+        };
+    }
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)
 };

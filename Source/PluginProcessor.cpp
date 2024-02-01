@@ -105,18 +105,17 @@ void SimpleEQAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     rightChain.prepare(spec);
 
     auto chainSettings = getChainSettings(apvts);
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-        sampleRate,
-        chainSettings.peakFreq,
-        chainSettings.peakQ,
-        juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels)
-    );
 
-   *leftChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
-   *rightChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
+    updatePeakFilter(chainSettings);
 
 
-
+   auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,
+       sampleRate,
+       2 * (chainSettings.lowCutShape + 1));
+   auto& leftLowCut = leftChain.get<ChainPositions::LowCut>();
+   updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutShape);
+   auto& rightLowCut = rightChain.get<ChainPositions::LowCut>();
+   updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutShape);
 }
 
 void SimpleEQAudioProcessor::releaseResources()
@@ -168,15 +167,17 @@ void SimpleEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
 
     auto chainSettings = getChainSettings(apvts);
 
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-        getSampleRate(),
-        chainSettings.peakFreq,
-        chainSettings.peakQ,
-        juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels)
-    );
+    updatePeakFilter(chainSettings);
 
-    *leftChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
-    *rightChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
+    auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,
+                                                                                                       getSampleRate(),
+                                                                                                       2 * (chainSettings.lowCutShape + 1));
+    auto& leftLowCut = leftChain.get<ChainPositions::LowCut>();
+    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutShape);
+
+    auto& rightLowCut = rightChain.get<ChainPositions::LowCut>();
+    updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutShape);
+
 
     juce::dsp::AudioBlock<float> block(buffer);
 
@@ -224,15 +225,33 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
     settings.peakFreq = apvts.getRawParameterValue("Peak Freq")->load();
     settings.peakGainInDecibels = apvts.getRawParameterValue("Peak Gain")->load();
     settings.peakQ = apvts.getRawParameterValue("Peak Q")->load();
-    settings.lowCutShape = apvts.getRawParameterValue("LowCut Shape")->load();
-    settings.highCutShape = apvts.getRawParameterValue("HighCut Shape")->load();
+    settings.lowCutShape = static_cast<Shape>(apvts.getRawParameterValue("LowCut Shape")->load());
+    settings.highCutShape = static_cast<Shape>(apvts.getRawParameterValue("HighCut Shape")->load());
 
     return settings;
 
 }
 
-juce::AudioProcessorValueTreeState::ParameterLayout
-SimpleEQAudioProcessor::createParameterLayout()
+void SimpleEQAudioProcessor::updateCoefficients(Coefficients &old, const Coefficients &replacements)
+{
+    *old = *replacements;
+}
+
+void SimpleEQAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings)
+{
+    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
+        getSampleRate(),
+        chainSettings.peakFreq,
+        chainSettings.peakQ,
+        juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels)
+    );
+
+    updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+    updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout SimpleEQAudioProcessor::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
