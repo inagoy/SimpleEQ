@@ -86,7 +86,7 @@ private:
     {
         LowCut,
         Peak,
-        HightCut
+        HighCut
     };
 
     void updatePeakFilter(const ChainSettings& chainSettings);
