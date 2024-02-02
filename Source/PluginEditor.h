@@ -43,6 +43,14 @@ private:
     CustomRotarySlider peakFreqSlider, peakGainSlider, peakQSlider, lowCutFreqSlider, highCutFreqSlider, 
                        lowCutShapeSlider, highCutShapeSlider;
 
+    using APVTS = juce::AudioProcessorValueTreeState;
+    using Attachment = APVTS::SliderAttachment;
+
+    Attachment peakFreqSliderAttachment, peakGainSliderAttachment, peakQSliderAttachment, 
+               lowCutFreqSliderAttachment, highCutFreqSliderAttachment,
+               lowCutShapeSliderAttachment, highCutShapeSliderAttachment;
+
+
     std::vector<juce::Component*> getComps();
 
 
