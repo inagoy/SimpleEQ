@@ -5,7 +5,7 @@
     <PLUGIN name="Audio Input" descriptiveName="" format="Internal" category="I/O devices"
             manufacturer="JUCE" version="1.0" file="" uniqueId="246006c0"
             isInstrument="0" fileTime="0" infoUpdateTime="0" numInputs="0"
-            numOutputs="2" isShell="0" hasARAExtension="0" uid="246006c0"/>
+            numOutputs="6" isShell="0" hasARAExtension="0" uid="246006c0"/>
     <STATE>0.</STATE>
     <LAYOUT>
       <INPUTS>
@@ -39,7 +39,7 @@
     <STATE>0.</STATE>
     <LAYOUT>
       <INPUTS>
-        <BUS index="0" layout="L R"/>
+        <BUS index="0" layout="L R C Lfe Ls Rs"/>
       </INPUTS>
       <OUTPUTS>
         <BUS index="0" layout="disabled"/>
@@ -62,13 +62,13 @@
     </LAYOUT>
   </FILTER>
   <FILTER uid="5" x="0.49125" y="0.5423387096774194" useARA="0" uiLastX_Normal="521"
-          uiLastY_Normal="198" uiopen_Normal="0">
+          uiLastY_Normal="198" uiopen_Normal="1">
     <PLUGIN name="SimpleEQ" format="VST3" category="Fx" manufacturer="yourcompany"
             version="1.0.0" file="C:\Plugins Dev\SimpleEQ\Builds\VisualStudio2022\x64\Debug\VST3\SimpleEQ.vst3\Contents\x86_64-win\SimpleEQ.vst3"
-            uniqueId="f7aad82e" isInstrument="0" fileTime="18d5aff5659" infoUpdateTime="18d5b13b930"
+            uniqueId="f7aad82e" isInstrument="0" fileTime="18d6a370fe5" infoUpdateTime="18d6a383e11"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e955e444"/>
-    <STATE>191.VMjLgXK....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9XCLt3hKt3hKt3hKt3hYRUUSTEETIckVwTjQisVTTgkdEYjKAQjYPQSPWgUdMcjKAQjct3hdA4hKt3hKt3hKtnTUv.UQAslXuk0UXoWUFE0YQcEV77RRC8Vav8lak4Fc9vyKVMEUy.Ea0cVZtMEcgQWY9..</STATE>
+    <STATE>615.VMjLg3k....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9LyM23BTEwlXmAiUYoWUrIVdA4hKAIlKTETRUAUSAAkKBolQY4BQlMTQlQkVscVLPASTGgjQIcUV2EjYic1cVM1ZAAkKIAkKt3hKt3hKlMidtDjKTETRUAUSAAkKBolQY4BQ1MTQlQkVscVLPASTGgzTmYEV1UkQtDSQFEFLUYjKAolKA4hKt3hKt3hKt3hKt.UQpQUPvPjKAgDTZoVPP4RST4xT0MlLPASTGgjQIcUV2EjYic1cVM1ZAAkKIAkKt3hKt3hKtD2XtDjKTETRUAUSAAkKBolQY4BQlMTQ1oWXxzDUioWP3QkaEYjXqEjYic1cVM1ZAAkKIAkKt3hKt3hKt3hKt3hKTETRUAUSAAkKBolQY4BQ1ITQtTUVmMmQHYTRWk0cAY1XmcmUisVPP4RRP4hKt3hKt3hKxblKA4BUAkTUP0TPP4hPpYTVtPjcBUjKUk0YyYDRGUjUZQWPlM1Y2Y0XqEDTtjDTt3hKt3hKt3hKt3hKtPUPIUETMEDTtHjZFkkKD4hPE4RUYc1bFgTTAY1XmcmUisVPP4RRP4hKt3hKt3hKtbyJt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C.</STATE>
     <LAYOUT>
       <INPUTS>
         <BUS index="0" layout="L R"/>
@@ -79,10 +79,10 @@
     </LAYOUT>
   </FILTER>
   <FILTER uid="9" x="0.495" y="0.2923387096774194" useARA="0" uiLastX_Normal="160"
-          uiLastY_Normal="138" uiopen_Normal="1">
+          uiLastY_Normal="138" uiopen_Normal="0">
     <PLUGIN name="NewProject" format="VST3" category="Fx" manufacturer="yourcompany"
             version="1.0.0" file="C:\Plugins Dev\NewProject\Builds\VisualStudio2022\x64\Debug\VST3\NewProject.vst3\Contents\x86_64-win\NewProject.vst3"
-            uniqueId="ef6bea2d" isInstrument="0" fileTime="18d5b117b6b" infoUpdateTime="18d5b13b931"
+            uniqueId="ef6bea2d" isInstrument="0" fileTime="18d5b117b6b" infoUpdateTime="18d6a383e11"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="e95156fa"/>
     <STATE>279.VMjLg3P....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9DiL03BTIISX1UEaho2ZVkUdAAkKAwDUigWRWkEcQ0VTucmUY4BQPkTQLolShUELhsVRxHlXqomc2YTLZ81cEE0ZMIiV5giQhIVU5Q0PEQDUEEDZKMWPxvjKt3hKt3hKt3hKt3hKtQUUCUEQTg2ZrM1YQcUVDUjQicVPP4RPHQEY1UTLhkWPP4RPL4hKi4hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQFwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C.</STATE>
