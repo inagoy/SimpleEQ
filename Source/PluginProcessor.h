@@ -18,6 +18,16 @@ enum Shape
     Shape_48
 };
 
+struct ChainSettings
+{
+    float peakFreq{ 0 }, peakGainInDecibels{ 0 }, peakQ{ 1.f };
+    float lowCutFreq{ 0 }, highCutFreq{ 0 };
+    Shape lowCutShape{ Shape::Shape_12 }, highCutShape{ Shape::Shape_12 };
+
+};
+
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+
 using Filter = juce::dsp::IIR::Filter<float>;
 using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
 using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
@@ -29,15 +39,12 @@ enum ChainPositions
     HighCut
 };
 
-struct ChainSettings
-{
-    float peakFreq{ 0 }, peakGainInDecibels{ 0 }, peakQ{ 1.f };
-    float lowCutFreq{ 0 }, highCutFreq{ 0 };
-    Shape lowCutShape{ Shape::Shape_12 }, highCutShape{ Shape::Shape_12 };
 
-};
+using Coefficients = Filter::CoefficientsPtr;
+void updateCoefficients(Coefficients& old, const Coefficients& replacements);
 
-ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+Coefficients makePeakFilter(const ChainSettings& chainSettings, double sampleRate);
+
 
 //==============================================================================
 /**
@@ -89,9 +96,7 @@ private:
     MonoChain leftChain, rightChain;
 
     void updatePeakFilter(const ChainSettings& chainSettings);
-    
-    using Coefficients = Filter::CoefficientsPtr;
-    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+
 
     template<int Index, typename ChainType, typename CoefficientType>
     void update(ChainType& chain, const CoefficientType& coefficients)
