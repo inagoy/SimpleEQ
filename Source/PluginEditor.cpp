@@ -89,6 +89,32 @@ void RotarySliderWithLabels::paint(juce::Graphics& g)
         startAng,
         endAng,
         *this);
+
+    auto center = sliderBounds.toFloat().getCentre();
+    auto radius = sliderBounds.getWidth() * 0.5f;
+
+    g.setColour(Colours::grey);
+    g.setFont(getTextHeight());
+
+    auto numChoices = labels.size();
+    for (int i=0; i<numChoices; i++)
+    {
+        auto pos = labels[i].pos;
+        jassert(0.f <= pos);
+        jassert(pos <= 1.f);
+        auto ang = jmap(pos, 0.f, 1.f, startAng, endAng);
+
+        auto c= center.getPointOnCircumference(radius + getTextHeight() * 0.5f + 1, ang);
+        Rectangle<float> r;
+        auto str = labels[i].label;
+        r.setSize(g.getCurrentFont().getStringWidth(str), getTextHeight());
+        r.setCentre(c);
+        r.setY(r.getY() + getTextHeight());
+
+        g.drawFittedText(str, r.toNearestInt(), juce::Justification::centred, 1);
+    }
+
+    
 }
 
 juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
@@ -280,6 +306,22 @@ SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor(SimpleEQAudioProcesso
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
 
+    peakFreqSlider.labels.add({ 0.f, "20Hz" });
+    peakFreqSlider.labels.add({ 1.f, "20kHz" });
+    lowCutFreqSlider.labels.add({ 0.f, "20Hz" });
+    lowCutFreqSlider.labels.add({ 1.f, "20kHz" });
+    highCutFreqSlider.labels.add({ 0.f, "20Hz" });
+    highCutFreqSlider.labels.add({ 1.f, "20kHz" });
+
+    peakQSlider.labels.add({ 0.f, "0.1" });
+    peakQSlider.labels.add({ 1.f, "10" });
+    peakGainSlider.labels.add({ 0.f, "-24dB" });
+    peakGainSlider.labels.add({ 1.f, "+24dB" });
+
+    lowCutShapeSlider.labels.add({ 0.f, "12" });
+    lowCutShapeSlider.labels.add({ 1.f, "48" });
+    highCutShapeSlider.labels.add({ 0.f, "12" });
+    highCutShapeSlider.labels.add({ 1.f, "48" });
 
 
     for (auto* comp : getComps())
