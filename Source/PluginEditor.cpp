@@ -20,10 +20,10 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
     using namespace juce;
     
     auto bounds = Rectangle<float>(x, y, width, height);
-    g.setColour(Colour(97u, 18u, 297u));
+    g.setColour(Colour(133u, 115u, 161u));
     g.fillEllipse(bounds);
 
-    g.setColour(Colour(255u, 154u, 1u));
+    g.setColour(Colour(44u, 24u, 73u));
     g.drawEllipse(bounds, 1.f);
     
 
@@ -36,7 +36,7 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
         r.setLeft(center.getX() - 2);
         r.setRight(center.getX() + 2);
         r.setTop(bounds.getY());
-        r.setBottom(center.getY()- rswl->getTextBoxHeight()* 1.5);
+        r.setBottom(center.getY()- rswl->getTextBoxHeight() * 1.1);
 
         p.addRoundedRectangle(r, 2.f);
 
@@ -73,11 +73,12 @@ void RotarySliderWithLabels::paint(juce::Graphics& g)
     auto range = getRange();
 
     auto sliderBounds = getSliderBounds();
-    g.setColour(Colours::red);
-    g.drawRect(getLocalBounds());
 
-    g.setColour(Colours::yellow);
-    g.drawRect(sliderBounds);
+    //g.setColour(Colours::red);
+    //g.drawRect(getLocalBounds());
+
+    //g.setColour(Colours::yellow);
+    //g.drawRect(sliderBounds);
 
     getLookAndFeel().drawRotarySlider(g,
         sliderBounds.getX(),
@@ -108,7 +109,40 @@ juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
 
 juce::String RotarySliderWithLabels::getDisplayString() const
 {
-    return juce::String(getValue());
+    if (auto* choiceParam = dynamic_cast<juce::AudioParameterChoice*>(param))
+        return choiceParam->getCurrentChoiceName();
+
+    juce::String str;
+    bool addK = false;
+
+    if (auto* floatParam = dynamic_cast<juce::AudioParameterFloat*>(param) )
+    {
+        float val = getValue();
+
+        if (val>999.f)
+        {
+            val /= 1000.f;
+            addK = true;
+        }
+
+        str = juce::String(val, (addK ? 2: 0));
+
+    }
+    else
+    {
+        jassertfalse; 
+    }
+
+    if (suffix.isNotEmpty())
+    {
+        str << " ";
+        if (addK)
+            str << "k";
+
+        str << suffix;
+    }
+
+    return str;
 }
 //==============================================================================
 ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor& p) : audioProcessor(p)
@@ -215,8 +249,8 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
     {
         responseCurve.lineTo(responseArea.getX() + i, map(mags[i]));
     }
-    g.setColour(Colours::blue);
-    g.drawRoundedRectangle(responseArea.toFloat(), 4.f, 1.f);
+    g.setColour(Colours::darkgrey);
+    g.drawRoundedRectangle(responseArea.toFloat(), 4.f, 2.f);
 
     g.setColour(Colours::black);
     g.strokePath(responseCurve, PathStrokeType(2.f));
