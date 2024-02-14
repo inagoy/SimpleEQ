@@ -26,8 +26,8 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
     g.setColour(enabled? Colour(133u, 115u, 161u) : Colours::grey);
     g.fillEllipse(bounds);
 
-    g.setColour(enabled ? Colour(115u, 98u, 146u) : Colours::darkgrey);
-    g.drawEllipse(bounds, 1.f);
+    g.setColour(enabled ? Colour(105u, 88u, 136u) : Colours::darkgrey);
+    g.drawEllipse(bounds, 2.f);
     
 
     if (auto* rswl = dynamic_cast<RotarySliderWithLabels*>(&slider))
@@ -57,7 +57,7 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
 
         r.setSize(strWidth + 4, rswl->getTextHeight() + 2);
         r.setCentre(bounds.getCentre());
-        g.setColour(Colours::black);
+        g.setColour(enabled? Colours::black : Colours::grey);
         g.fillRect(r);
 
         g.setColour(Colours::white);
@@ -96,7 +96,7 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
     
         g.setColour(color);
         g.strokePath(powerButton, pst);
-        g.drawEllipse(r, 2);
+        g.drawEllipse(r, 1);
     }
     else if (auto* analyzerButton = dynamic_cast<AnalyzerButton*>(&toggleButton))
     {
@@ -283,8 +283,9 @@ void PathProducer::process(juce::Rectangle<float> fftBounds, double sampleRate)
          generate a path
   */
     const auto fftSize = leftChannelFFTDataGenerator.getFFTSize();
-
     const auto binWidth = sampleRate / (double) fftSize;
+
+    DBG("RES=" << sampleRate << " " << fftSize << " " << binWidth);
 
     while (leftChannelFFTDataGenerator.getNumAvailableFFTDataBlocks() > 0)
     {
@@ -419,7 +420,7 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 
         g.setColour(Colours::blue);
         g.strokePath(leftChannelFFTPath, PathStrokeType(1.f));
-
+    
         auto rightChannelFFTPath = rightPathProducer.getPath();
         rightChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
 
@@ -481,11 +482,11 @@ void ResponseCurveComponent::resized()
     for (auto gDb : gain)
     {
         auto y = jmap(gDb, -24.f, 24.f, float(bottom), float(top));
-        g.setColour(gDb == 0.f ? Colour(115u, 98u, 146u) : Colours::grey);
+        g.setColour(gDb == 0.f ? Colour(105u, 88u, 136u) : Colours::grey);
         g.drawHorizontalLine(y, left, right);
     }
 
-    g.setColour(Colour(115u, 98u, 146u));
+    g.setColour(Colour(105u, 88u, 136u));
     const int fontHeight = 10;
     g.setFont(fontHeight);
 
@@ -684,14 +685,11 @@ SimpleEQAudioProcessorEditor::~SimpleEQAudioProcessorEditor()
 void SimpleEQAudioProcessorEditor::paint(juce::Graphics& g)
 {
     using namespace juce;
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(Colours::whitesmoke);
 }
 
 void SimpleEQAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
 
     auto bounds = getLocalBounds();
 
