@@ -70,28 +70,44 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 {
     using namespace juce;
 
-    Path powerButton;
+    if (auto* pb = dynamic_cast<PowerButton*>(&toggleButton))
+    { 
+        Path powerButton;
 
-    auto bounds = toggleButton.getLocalBounds();
-    auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
-    auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
+        auto bounds = toggleButton.getLocalBounds();
+        auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
+        auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
 
-    float ang = 30.f;
-    size -= 6;
+        float ang = 30.f;
+        size -= 6;
 
-    powerButton.addCentredArc(r.getCentreX(), r.getCentreY(),
-        size * 0.5, size * 0.5, 0.f,
-        degreesToRadians(ang), degreesToRadians(360.f - ang), true);
+        powerButton.addCentredArc(r.getCentreX(), r.getCentreY(),
+            size * 0.5, size * 0.5, 0.f,
+            degreesToRadians(ang), degreesToRadians(360.f - ang), true);
 
-    powerButton.startNewSubPath(r.getCentreX(), r.getY());
-    powerButton.lineTo(r.getCentre());
+        powerButton.startNewSubPath(r.getCentreX(), r.getY());
+        powerButton.lineTo(r.getCentre());
 
-    PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
-    auto color = toggleButton.getToggleState() ? Colours::dimgrey : Colours::green;
+        PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
+        auto color = toggleButton.getToggleState() ? Colours::dimgrey : Colours::green;
     
-    g.setColour(color);
-    g.strokePath(powerButton, pst);
-    g.drawEllipse(r, 2);
+        g.setColour(color);
+        g.strokePath(powerButton, pst);
+        g.drawEllipse(r, 2);
+    }
+    else if (auto* analyzerButton = dynamic_cast<AnalyzerButton*>(&toggleButton))
+    {
+        auto color = ! toggleButton.getToggleState() ? Colours::dimgrey : Colours::green;
+        g.setColour(color);
+
+        auto bounds = toggleButton.getLocalBounds();
+        g.drawRect(bounds);
+
+
+        g.strokePath(analyzerButton->randomPath, PathStrokeType(1.f));
+    }
+
+
 }
 //==============================================================================
 void RotarySliderWithLabels::paint(juce::Graphics& g)
@@ -571,7 +587,7 @@ SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor(SimpleEQAudioProcesso
     lowCutBypassAttachment(audioProcessor.apvts, "LowCut Bypass", lowCutBypassButton),
     highCutBypassAttachment(audioProcessor.apvts, "HighCut Bypass", highCutBypassButton),
     peakBypassAttachment(audioProcessor.apvts, "Peak Bypass", peakBypassButton),
-    analyserEnableAttachment(audioProcessor.apvts, "Analyser Enable", analyserEnableButton)
+    analyzerEnableAttachment(audioProcessor.apvts, "Analyzer Enable", analyzerEnableButton)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -602,6 +618,7 @@ SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor(SimpleEQAudioProcesso
     lowCutBypassButton.setLookAndFeel(&lnf);
     highCutBypassButton.setLookAndFeel(&lnf);
     peakBypassButton.setLookAndFeel(&lnf);
+    analyzerEnableButton.setLookAndFeel(&lnf);
 
     setSize(600, 500);
 }
@@ -611,6 +628,7 @@ SimpleEQAudioProcessorEditor::~SimpleEQAudioProcessorEditor()
     lowCutBypassButton.setLookAndFeel(nullptr);
     highCutBypassButton.setLookAndFeel(nullptr);
     peakBypassButton.setLookAndFeel(nullptr);
+    analyzerEnableButton.setLookAndFeel(nullptr);
 }
 
 //==============================================================================
@@ -628,6 +646,16 @@ void SimpleEQAudioProcessorEditor::resized()
     // subcomponents in your editor..
 
     auto bounds = getLocalBounds();
+
+    auto analyzerEnableArea = bounds.removeFromTop(25);
+    analyzerEnableArea.setWidth(100);
+    analyzerEnableArea.setX(5);
+    analyzerEnableArea.removeFromTop(2);
+
+    analyzerEnableButton.setBounds(analyzerEnableArea);
+
+    bounds.removeFromTop(5);
+
     float hRatio = 30.f / 100.f;
     auto responseArea = bounds.removeFromTop(bounds.getHeight() * hRatio);
 
@@ -668,6 +696,6 @@ std::vector<juce::Component*> SimpleEQAudioProcessorEditor::getComps()
         &lowCutBypassButton, 
         &highCutBypassButton, 
         &peakBypassButton, 
-        &analyserEnableButton
+        &analyzerEnableButton
     };
 }

@@ -258,6 +258,31 @@ juce::Timer
         PathProducer leftPathProducer, rightPathProducer;
 };
 //==============================================================================
+
+struct PowerButton : juce::ToggleButton {};
+struct AnalyzerButton : juce::ToggleButton
+{
+    void resized() override
+    {
+        auto bounds = getLocalBounds();
+        auto insetRect = bounds.reduced(4);
+
+        randomPath.clear();
+
+        juce::Random r;
+
+        randomPath.startNewSubPath(insetRect.getY(), insetRect.getY() + insetRect.getHeight() * r.nextFloat());
+
+        for (auto x = insetRect.getX() + 1; x < insetRect.getRight(); x += 2)
+        {
+            randomPath.lineTo(x, insetRect.getY() + insetRect.getHeight() * r.nextFloat());
+        }
+    }
+    
+    juce::Path randomPath;
+};
+
+
 /**
 */
 class SimpleEQAudioProcessorEditor  : public juce::AudioProcessorEditor
@@ -285,9 +310,11 @@ private:
                lowCutFreqSliderAttachment, highCutFreqSliderAttachment,
                lowCutShapeSliderAttachment, highCutShapeSliderAttachment;
 
-    juce::ToggleButton lowCutBypassButton, highCutBypassButton, peakBypassButton, analyserEnableButton;
+    PowerButton lowCutBypassButton, highCutBypassButton, peakBypassButton;
+    AnalyzerButton analyzerEnableButton;
+
     using ButtonAttachment = APVTS::ButtonAttachment;
-    ButtonAttachment lowCutBypassAttachment, highCutBypassAttachment, peakBypassAttachment, analyserEnableAttachment;
+    ButtonAttachment lowCutBypassAttachment, highCutBypassAttachment, peakBypassAttachment, analyzerEnableAttachment;
 
 
     ResponseCurveComponent responseCurveComponent;

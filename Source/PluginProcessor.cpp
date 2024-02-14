@@ -361,7 +361,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleEQAudioProcessor::crea
     layout.add(std::make_unique<juce::AudioParameterBool>("LowCut Bypass", "LowCut Bypass", false));
     layout.add(std::make_unique<juce::AudioParameterBool>("HighCut Bypass", "HighCut Bypass", false));
     layout.add(std::make_unique<juce::AudioParameterBool>("Peak Bypass", "Peak Bypass", false));
-    layout.add(std::make_unique<juce::AudioParameterBool>("Analyser Enable", "Analyser Enable", true));
+    layout.add(std::make_unique<juce::AudioParameterBool>("Analyzer Enable", "Analyzer Enable", true));
 
     return layout;
 }
